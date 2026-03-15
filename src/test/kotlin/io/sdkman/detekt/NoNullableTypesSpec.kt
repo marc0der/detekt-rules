@@ -64,4 +64,24 @@ class NoNullableTypesSpec : ShouldSpec({
             findings.first().message shouldContain "String?"
         }
     }
+
+    should("flag a nullable local variable type") {
+        // given: a local variable with a nullable type inside a function
+        val code = """
+            fun example() {
+                var count: Int? = null
+            }
+        """.trimIndent()
+
+        // when: the rule is applied
+        val findings = rule.lint(code)
+
+        // then: one finding is reported
+        withClue("Expected exactly one finding for nullable local variable") {
+            findings shouldHaveSize 1
+        }
+        withClue("Finding message should mention the nullable type") {
+            findings.first().message shouldContain "Int?"
+        }
+    }
 })
