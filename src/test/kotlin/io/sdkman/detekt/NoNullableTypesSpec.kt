@@ -84,4 +84,21 @@ class NoNullableTypesSpec : ShouldSpec({
             findings.first().message shouldContain "Int?"
         }
     }
+
+    should("flag multiple nullable usages in a single file") {
+        // given: code with three distinct nullable types
+        val code = """
+            fun getUser(id: String): String? = null
+            val name: String? = null
+            fun process(input: Int?): String = "done"
+        """.trimIndent()
+
+        // when: the rule is applied
+        val findings = rule.lint(code)
+
+        // then: three findings are reported
+        withClue("Expected three findings for three nullable usages") {
+            findings shouldHaveSize 3
+        }
+    }
 })
