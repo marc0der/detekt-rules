@@ -118,4 +118,22 @@ class NoNullableTypesSpec : ShouldSpec({
             findings shouldHaveSize 0
         }
     }
+
+    should("suppress findings when function is annotated with @AllowNullableTypes") {
+        // given: a function annotated with @AllowNullableTypes
+        val code = """
+            annotation class AllowNullableTypes
+
+            @AllowNullableTypes
+            fun legacyBridge(): String? = null
+        """.trimIndent()
+
+        // when: the rule is applied
+        val findings = rule.lint(code)
+
+        // then: no findings are reported
+        withClue("Expected no findings when @AllowNullableTypes is present") {
+            findings shouldHaveSize 0
+        }
+    }
 })
