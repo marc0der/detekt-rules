@@ -46,4 +46,22 @@ class NoNullableTypesSpec : ShouldSpec({
             findings.first().message shouldContain "String?"
         }
     }
+
+    should("flag a nullable property type") {
+        // given: a property with a nullable type
+        val code = """
+            val result: String? = null
+        """.trimIndent()
+
+        // when: the rule is applied
+        val findings = rule.lint(code)
+
+        // then: one finding is reported
+        withClue("Expected exactly one finding for nullable property") {
+            findings shouldHaveSize 1
+        }
+        withClue("Finding message should mention the nullable type") {
+            findings.first().message shouldContain "String?"
+        }
+    }
 })
