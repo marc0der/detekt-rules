@@ -1,0 +1,3 @@
+SdkmanRuleSet:
+  NoNullableTypes:
+    active: true
