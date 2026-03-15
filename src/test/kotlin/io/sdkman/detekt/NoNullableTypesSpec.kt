@@ -101,4 +101,21 @@ class NoNullableTypesSpec : ShouldSpec({
             findings shouldHaveSize 3
         }
     }
+
+    should("report no findings for non-nullable code") {
+        // given: code with no nullable types
+        val code = """
+            fun greet(name: String): String = "Hello, ${'$'}name"
+            val count: Int = 42
+            fun add(a: Int, b: Int): Int = a + b
+        """.trimIndent()
+
+        // when: the rule is applied
+        val findings = rule.lint(code)
+
+        // then: no findings are reported
+        withClue("Expected no findings for non-nullable code") {
+            findings shouldHaveSize 0
+        }
+    }
 })
