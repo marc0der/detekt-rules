@@ -28,4 +28,22 @@ class NoNullableTypesSpec : ShouldSpec({
             findings.first().message shouldContain "String?"
         }
     }
+
+    should("flag a nullable parameter type") {
+        // given: a function with a nullable parameter
+        val code = """
+            fun process(name: String?): String = name ?: "default"
+        """.trimIndent()
+
+        // when: the rule is applied
+        val findings = rule.lint(code)
+
+        // then: one finding is reported
+        withClue("Expected exactly one finding for nullable parameter") {
+            findings shouldHaveSize 1
+        }
+        withClue("Finding message should mention the nullable type") {
+            findings.first().message shouldContain "String?"
+        }
+    }
 })
