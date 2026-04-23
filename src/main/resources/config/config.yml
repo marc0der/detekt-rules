@@ -1,3 +1,11 @@
 SdkmanRuleSet:
   NoNullableTypes:
     active: true
+  NoElvisOperator:
+    active: true
+  NoNotNullAssertion:
+    active: true
+  NoSafeCall:
+    active: true
+  NoPlatformTypes:
+    active: true

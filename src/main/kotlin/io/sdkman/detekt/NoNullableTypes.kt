@@ -7,32 +7,21 @@ import io.gitlab.arturbosch.detekt.api.Entity
 import io.gitlab.arturbosch.detekt.api.Issue
 import io.gitlab.arturbosch.detekt.api.Rule
 import io.gitlab.arturbosch.detekt.api.Severity
-import org.jetbrains.kotlin.psi.KtNamedFunction
 import org.jetbrains.kotlin.psi.KtNullableType
-import org.jetbrains.kotlin.psi.KtParameter
-import org.jetbrains.kotlin.psi.KtProperty
-import org.jetbrains.kotlin.psi.psiUtil.getStrictParentOfType
 
 class NoNullableTypes(config: Config) : Rule(config) {
     override val issue = Issue(
         javaClass.simpleName,
         Severity.Defect,
         "Nullable types are discouraged. Use Arrow's Option instead, " +
-            "or annotate with @AllowNullableTypes to suppress.",
+            "or annotate with @AllowNullableUsage to suppress.",
         Debt.TWENTY_MINS,
     )
 
     override fun visitNullableType(nullableType: KtNullableType) {
         super.visitNullableType(nullableType)
 
-        val enclosingDeclaration =
-            nullableType.getStrictParentOfType<KtNamedFunction>()
-                ?: nullableType.getStrictParentOfType<KtParameter>()
-                ?: nullableType.getStrictParentOfType<KtProperty>()
-
-        if (enclosingDeclaration != null && hasAllowAnnotation(enclosingDeclaration)) {
-            return
-        }
+        if (nullableType.isSuppressedFromNullableUsage()) return
 
         report(
             CodeSmell(
@@ -43,9 +32,4 @@ class NoNullableTypes(config: Config) : Rule(config) {
             ),
         )
     }
-
-    private fun hasAllowAnnotation(declaration: org.jetbrains.kotlin.psi.KtAnnotated): Boolean =
-        declaration.annotationEntries.any { annotation ->
-            annotation.shortName?.asString() == "AllowNullableTypes"
-        }
 }

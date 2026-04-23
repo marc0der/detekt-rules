@@ -10,6 +10,12 @@ class SdkmanRuleSetProvider : RuleSetProvider {
     override fun instance(config: Config): RuleSet =
         RuleSet(
             ruleSetId,
-            listOf(NoNullableTypes(config)),
+            listOf(
+                NoNullableTypes(config),
+                NoElvisOperator(config),
+                NoNotNullAssertion(config),
+                NoSafeCall(config),
+                NoPlatformTypes(config),
+            ),
         )
 }
