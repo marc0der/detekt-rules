@@ -1,4 +1,4 @@
-package io.sdkman.detekt
+package com.github.marc0der.detekt
 
 import io.gitlab.arturbosch.detekt.api.Config
 import io.gitlab.arturbosch.detekt.test.lint
@@ -7,57 +7,56 @@ import io.kotest.core.spec.style.ShouldSpec
 import io.kotest.matchers.collections.shouldHaveSize
 import io.kotest.matchers.string.shouldContain
 
-class NoElvisOperatorSpec : ShouldSpec({
+class NoNotNullAssertionSpec : ShouldSpec({
 
-    val rule = NoElvisOperator(Config.empty)
+    val rule = NoNotNullAssertion(Config.empty)
 
-    should("flag a simple elvis expression") {
-        // given: code using ?:
+    should("flag a simple not-null assertion") {
+        // given: code using !!
         val code = """
-            fun greet(name: String?): String = name ?: "anon"
+            fun length(name: String?): Int = name!!.length
         """.trimIndent()
 
         // when: the rule is applied
         val findings = rule.lint(code)
 
         // then: one finding is reported
-        withClue("Expected exactly one finding for elvis operator") {
+        withClue("Expected exactly one finding for !!") {
             findings shouldHaveSize 1
         }
-        withClue("Finding should suggest Arrow's Option.getOrElse") {
-            findings.first().message shouldContain "Option.getOrElse"
+        withClue("Finding message should reference the !! operator") {
+            findings.first().message shouldContain "!!"
         }
     }
 
-    should("flag multiple elvis usages in one file") {
-        // given: code with three distinct elvis expressions
+    should("flag multiple not-null assertions in one file") {
+        // given: code with several !! expressions
         val code = """
-            fun a(x: String?): String = x ?: "a"
-            fun b(y: Int?): Int = y ?: 0
-            val z: String = (null as String?) ?: "z"
+            fun a(x: String?): Int = x!!.length
+            fun b(y: Int?): Int = y!! + 1
+            val z: String = (null as String?)!!
         """.trimIndent()
 
         // when: the rule is applied
         val findings = rule.lint(code)
 
         // then: three findings are reported
-        withClue("Expected three findings for three elvis expressions") {
+        withClue("Expected three findings for three !! expressions") {
             findings shouldHaveSize 3
         }
     }
 
-    should("report no findings when elvis is absent") {
-        // given: code with no elvis operator
+    should("report no findings when !! is absent") {
+        // given: code with no !!
         val code = """
             fun add(a: Int, b: Int): Int = a + b
-            val value: Int = 42
         """.trimIndent()
 
         // when: the rule is applied
         val findings = rule.lint(code)
 
         // then: no findings are reported
-        withClue("Expected no findings for code without elvis") {
+        withClue("Expected no findings for code without !!") {
             findings shouldHaveSize 0
         }
     }
@@ -68,7 +67,7 @@ class NoElvisOperatorSpec : ShouldSpec({
             annotation class AllowNullableUsage
 
             @AllowNullableUsage
-            fun legacyBridge(name: String?): String = name ?: "anon"
+            fun legacyBridge(name: String?): Int = name!!.length
         """.trimIndent()
 
         // when: the rule is applied
@@ -81,12 +80,12 @@ class NoElvisOperatorSpec : ShouldSpec({
     }
 
     should("suppress findings when enclosing function is annotated with legacy @AllowNullableTypes") {
-        // given: a function annotated with the legacy @AllowNullableTypes
+        // given: a function annotated with the legacy annotation
         val code = """
             annotation class AllowNullableTypes
 
             @AllowNullableTypes
-            fun legacyBridge(name: String?): String = name ?: "anon"
+            fun legacyBridge(name: String?): Int = name!!.length
         """.trimIndent()
 
         // when: the rule is applied
@@ -94,26 +93,6 @@ class NoElvisOperatorSpec : ShouldSpec({
 
         // then: no findings are reported
         withClue("Expected no findings when legacy @AllowNullableTypes is present") {
-            findings shouldHaveSize 0
-        }
-    }
-
-    should("suppress findings for an entire annotated class") {
-        // given: a class annotated with @AllowNullableUsage containing elvis usage
-        val code = """
-            annotation class AllowNullableUsage
-
-            @AllowNullableUsage
-            class Bridge {
-                fun greet(name: String?): String = name ?: "anon"
-            }
-        """.trimIndent()
-
-        // when: the rule is applied
-        val findings = rule.lint(code)
-
-        // then: no findings are reported
-        withClue("Expected class-level suppression to cover nested elvis usage") {
             findings shouldHaveSize 0
         }
     }

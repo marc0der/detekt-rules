@@ -1,4 +1,4 @@
-package io.sdkman.detekt
+package com.github.marc0der.detekt
 
 import org.jetbrains.kotlin.com.intellij.psi.PsiElement
 import org.jetbrains.kotlin.psi.KtAnnotated

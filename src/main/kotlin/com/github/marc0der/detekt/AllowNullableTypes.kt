@@ -1,4 +1,4 @@
-package io.sdkman.detekt
+package com.github.marc0der.detekt
 
 @Target(
     AnnotationTarget.FUNCTION,

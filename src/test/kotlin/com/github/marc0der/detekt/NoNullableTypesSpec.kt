@@ -1,4 +1,4 @@
-package io.sdkman.detekt
+package com.github.marc0der.detekt
 
 import io.gitlab.arturbosch.detekt.api.Config
 import io.gitlab.arturbosch.detekt.test.lint

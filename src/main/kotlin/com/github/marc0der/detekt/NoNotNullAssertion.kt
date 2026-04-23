@@ -1,4 +1,4 @@
-package io.sdkman.detekt
+package com.github.marc0der.detekt
 
 import io.gitlab.arturbosch.detekt.api.CodeSmell
 import io.gitlab.arturbosch.detekt.api.Config
@@ -8,30 +8,30 @@ import io.gitlab.arturbosch.detekt.api.Issue
 import io.gitlab.arturbosch.detekt.api.Rule
 import io.gitlab.arturbosch.detekt.api.Severity
 import org.jetbrains.kotlin.lexer.KtTokens
-import org.jetbrains.kotlin.psi.KtBinaryExpression
+import org.jetbrains.kotlin.psi.KtPostfixExpression
 
-class NoElvisOperator(config: Config) : Rule(config) {
+class NoNotNullAssertion(config: Config) : Rule(config) {
     override val issue = Issue(
         javaClass.simpleName,
         Severity.Defect,
-        "The Elvis operator (?:) reaches for a fallback against null. " +
-            "Prefer Arrow's Option.getOrElse { } to model absence explicitly, " +
+        "The not-null assertion (!!) trades a compile-time guarantee for a runtime crash. " +
+            "Model absence explicitly with Arrow's Option, " +
             "or annotate with @AllowNullableUsage to suppress.",
-        Debt.TEN_MINS,
+        Debt.TWENTY_MINS,
     )
 
-    override fun visitBinaryExpression(expression: KtBinaryExpression) {
-        super.visitBinaryExpression(expression)
+    override fun visitPostfixExpression(expression: KtPostfixExpression) {
+        super.visitPostfixExpression(expression)
 
-        if (expression.operationToken != KtTokens.ELVIS) return
+        if (expression.operationToken != KtTokens.EXCLEXCL) return
         if (expression.isSuppressedFromNullableUsage()) return
 
         report(
             CodeSmell(
                 issue,
                 Entity.from(expression),
-                "Elvis operator '?:' detected. Prefer Arrow's Option.getOrElse { } " +
-                    "to handle absence explicitly.",
+                "Not-null assertion '!!' detected. Prefer modelling absence with " +
+                    "Arrow's Option and handling the None case explicitly.",
             ),
         )
     }

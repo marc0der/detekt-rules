@@ -59,8 +59,8 @@ fun findUser(id: String): Option<User> = TODO()
 - The rule should extend `Rule` and visit the AST using the appropriate `visit*` methods for nullable type nodes.
 - Nullable types in Kotlin's AST are represented as `KtNullableType` nodes. Visit them and check if the **immediate enclosing declaration** (function, parameter, or property) is annotated with `@AllowNullableTypes`. Class-level and file-level suppression is intentionally not supported — annotations must be applied at the narrowest possible scope.
 - `LOCAL_VARIABLE` is intentionally excluded from `@AllowNullableTypes` targets — Kotlin does not retain local variable annotations in bytecode, so Detekt cannot read them. Local nullable vars must be refactored, not suppressed.
-- The annotation `AllowNullableTypes` should be defined in the same module under a sensible package (e.g. `io.sdkman.detekt`).
-- Package: `io.sdkman.detekt`
+- The annotation `AllowNullableTypes` should be defined in the same module under a sensible package (e.g. `com.github.marc0der.detekt`).
+- Package: `com.github.marc0der.detekt`
 - Group ID for JitPack: `com.github.marc0der`
 - Artifact ID: `detekt-rules`
 - Version: `1.0.0`

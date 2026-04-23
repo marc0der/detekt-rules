@@ -37,7 +37,7 @@ dependencies {
 For cases where nullable types are unavoidable (e.g. Java interop), annotate the declaration with `@AllowNullableTypes`:
 
 ```kotlin
-import io.sdkman.detekt.AllowNullableTypes
+import com.github.marc0der.detekt.AllowNullableTypes
 
 @AllowNullableTypes
 fun legacyJavaBridge(): String? = javaClient.getValue()

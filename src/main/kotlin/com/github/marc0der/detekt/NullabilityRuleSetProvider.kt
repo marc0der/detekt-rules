@@ -1,11 +1,11 @@
-package io.sdkman.detekt
+package com.github.marc0der.detekt
 
 import io.gitlab.arturbosch.detekt.api.Config
 import io.gitlab.arturbosch.detekt.api.RuleSet
 import io.gitlab.arturbosch.detekt.api.RuleSetProvider
 
-class SdkmanRuleSetProvider : RuleSetProvider {
-    override val ruleSetId: String = "SdkmanRuleSet"
+class NullabilityRuleSetProvider : RuleSetProvider {
+    override val ruleSetId: String = "NullabilityRuleSet"
 
     override fun instance(config: Config): RuleSet =
         RuleSet(

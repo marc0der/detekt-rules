@@ -1,4 +1,4 @@
-SdkmanRuleSet:
+NullabilityRuleSet:
   NoNullableTypes:
     active: true
   NoElvisOperator:

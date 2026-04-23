@@ -1,1 +1,1 @@
-io.sdkman.detekt.SdkmanRuleSetProvider
+com.github.marc0der.detekt.NullabilityRuleSetProvider
